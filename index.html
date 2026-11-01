@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a1627" />
+    <title>蓝牙小车 · 环境监测</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="page-header">
+        <div>
+          <h1>蓝牙小车 <span>·</span> 环境监测</h1>
+          <p>通过 BLE 实时显示 SHT30 温度与相对湿度的变化曲线</p>
+        </div>
+        <div class="header-actions">
+          <button id="theme-button" class="theme-button" type="button" aria-label="切换浅色模式">☀ 浅色</button>
+          <div class="connection-status"><i id="connection-dot" class="status-dot" aria-hidden="true"></i><span id="connection-text">未连接</span></div>
+        </div>
+      </header>
+
+      <section class="command-bar" aria-label="连接与数据操作">
+        <button id="connect-button" class="button primary" type="button">连接小车</button>
+        <button id="disconnect-button" class="button" type="button" disabled>断开连接</button>
+        <button id="pause-button" class="button" type="button">暂停曲线</button>
+        <button id="clear-button" class="button" type="button">清空数据</button>
+        <button id="export-button" class="button" type="button">导出 CSV</button>
+      </section>
+
+      <section class="summary-grid" aria-label="当前环境数据">
+        <article class="metric-card temperature-card">
+          <h2>当前温度</h2>
+          <div class="metric-value"><strong id="temperature-value">--</strong><span>°C</span></div>
+          <p id="temperature-note">等待传感器数据</p>
+        </article>
+        <article class="metric-card humidity-card">
+          <h2>当前相对湿度</h2>
+          <div class="metric-value"><strong id="humidity-value">--</strong><span>%RH</span></div>
+          <p id="humidity-note">等待传感器数据</p>
+        </article>
+      </section>
+
+      <section class="chart-panel" aria-label="温湿度趋势">
+        <div class="chart-heading">
+          <div>
+            <h2>最近 <span id="range-title">60</span> 个采样点</h2>
+            <p id="updated-at">等待连接小车</p>
+          </div>
+          <div class="chart-controls">
+            <div class="range-control" role="group" aria-label="曲线显示范围">
+              <button class="range-button" data-range="30" type="button">30</button>
+              <button class="range-button active" data-range="60" type="button">60</button>
+              <button class="range-button" data-range="120" type="button">120</button>
+            </div>
+            <div class="chart-legend" aria-label="图例"><span class="temperature-key">● 温度 °C</span><span class="humidity-key">● 湿度 %RH</span></div>
+          </div>
+        </div>
+        <div class="canvas-wrap"><canvas id="trend-chart" role="img" aria-label="温度和湿度的实时趋势图"></canvas></div>
+        <p id="chart-empty" class="chart-empty">连接小车后，温湿度曲线将在这里显示</p>
+      </section>
+
+      <section class="control-panel" aria-labelledby="drive-heading">
+        <div class="drive-info">
+          <p class="section-label">DRIVE CONTROL</p>
+          <h2 id="drive-heading">小车控制</h2>
+          <p id="drive-status">连接后可使用键盘或方向按钮控制小车</p>
+          <div class="session-meta"><span>本次采样</span><strong id="sample-count">0</strong><span>条</span></div>
+        </div>
+        <div class="drive-controls" aria-label="小车方向控制">
+          <button class="drive-key up" data-command="F" data-key="W" type="button" aria-label="前进，快捷键 W">W<span>前进</span></button>
+          <button class="drive-key left" data-command="L" data-key="A" type="button" aria-label="左转，快捷键 A">A<span>左转</span></button>
+          <button class="drive-key stop" data-command="S" type="button" aria-label="停止">■<span>停止</span></button>
+          <button class="drive-key right" data-command="R" data-key="D" type="button" aria-label="右转，快捷键 D">D<span>右转</span></button>
+          <button class="drive-key down" data-command="B" data-key="S" type="button" aria-label="后退，快捷键 S">S<span>后退</span></button>
+        </div>
+        <p class="key-hint">按住 <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 行驶，松开即停止</p>
+      </section>
+    </main>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
+
